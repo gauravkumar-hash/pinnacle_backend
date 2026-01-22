@@ -134,12 +134,13 @@ from routers import render
 app.include_router(render.router, prefix="/api/render", tags=["Render APIs"])
 
 # CORS Support: https://stackoverflow.com/a/66460861
+admin_url = os.getenv("ADMIN_WEB_URL", "https://pinnacle-admin-panel.vercel.app").strip().rstrip("/")
+
 origins = [
-    ADMIN_WEB_URL,
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "http://localhost:3000",
+    admin_url,
+    f"{admin_url}/" # Cover both with and without slash
 ]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -147,7 +148,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 # uvicorn main:app --reload --host 0.0.0.0 --port 8000
 if __name__ == '__main__':
     import uvicorn

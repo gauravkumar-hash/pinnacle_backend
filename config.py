@@ -120,10 +120,10 @@ redis_client = redis.StrictRedis(
     host=REDIS_HOST, 
     port=REDIS_PORT, 
     db=REDIS_DB, 
-    password=REDIS_PASSWORD,    # Support for Upstash password
-    ssl=True,                   # Required for Upstash
-    ssl_cert_reqs=None,         # Required for cloud providers
-    decode_responses=True
+    password=REDIS_PASSWORD,
+    decode_responses=True,
+    ssl=True,             # <--- MANDATORY for Upstash
+    ssl_cert_reqs=None    # <--- MANDATORY for cloud providers
 )
 
 # Logging

@@ -2,9 +2,17 @@
 set -e
 set -o pipefail
 
-echo "==> Installing Python dependencies..."
+echo "==> Activating virtual environment..."
+source .venv/bin/activate
+
+echo "==> Upgrading pip..."
 python -m pip install --upgrade pip
-python -m pip install uv
+
+echo "==> Installing Python dependencies..."
+# Make sure you install uvicorn, fastapi, etc.
+python -m pip install -r requirements.txt
+python -m pip install uvicorn
+
 echo "==> Dependencies installed."
 
 echo "==> Installing Infisical CLI..."
@@ -13,3 +21,5 @@ curl -fsSL https://github.com/Infisical/cli/releases/download/v0.43.48/cli_0.43.
 chmod +x .infisical/infisical
 export PATH="$PWD/.infisical:$PATH"
 echo "==> Infisical CLI installed at ./.infisical"
+
+echo "==> Build complete ✅"

@@ -16,6 +16,7 @@ from routers.admin.walkin import WalkinAdminResp
 from utils.sg_datetime import sg
 
 # Added 's' to redis and included the password/default user
+# Ensure this uses the 'rediss' protocol for SSL
 BROADCASTER_URL = f'rediss://default:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}'
 BROADCASTER_CHANNEL = 'realtime'
 

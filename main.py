@@ -60,7 +60,29 @@ async def unicorn_exception_handler(request: Request, exc: HTTPJSONException):
             "detail": exc.message,
         },
     )
+ADMIN_WEB_URL = os.getenv("ADMIN_WEB_URL", "").strip().rstrip("/")
+ENVIRONMENT = os.getenv("BACKEND_ENVIRONMENT", "development")
 
+origins = ["http://localhost:5173", "http://localhost:3000"]
+if ADMIN_WEB_URL:
+    origins.append(ADMIN_WEB_URL)
+
+if ENVIRONMENT == "development":
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origin_regex=r"https://.*\.vercel\.app", 
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+else:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 # Patient App Routers
 from routers.patient.auth import router as auth_router
 from routers.patient.user import router as user_router
@@ -133,22 +155,7 @@ app.include_router(crons_router, prefix="/api/crons", tags=["Cron Jobs"])
 from routers import render
 app.include_router(render.router, prefix="/api/render", tags=["Render APIs"])
 
-# CORS Support: https://stackoverflow.com/a/66460861
-admin_url = os.getenv("ADMIN_WEB_URL", "https://pinnacle-admin-panel.vercel.app").strip().rstrip("/")
 
-origins = [
-    admin_url,
-    f"{admin_url}/" # Cover both with and without slash
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-# uvicorn main:app --reload --host 0.0.0.0 --port 8000
 if __name__ == '__main__':
     import uvicorn
     if IS_DEV:
